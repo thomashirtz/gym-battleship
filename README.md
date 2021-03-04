@@ -1,11 +1,6 @@
 # gym-battleship
 Battleship environment using the OpenAI environment toolkit.
 
-## Requirements
-
-gym  
-numpy
-
 ## Basics
 
 Make and initialize an environment:
@@ -28,7 +23,7 @@ for i in range(10):
     env.step(env.action_space.sample())
 ```
 
-## Parameters
+## Customize environments
 
 The original battleship game is played on a 10x10 grid and the fleet is composed 5 ships:  Carrier (occupies 5 spaces), Battleship (4), Cruiser (3), Submarine (3), and Destroyer (2).  
 
@@ -43,4 +38,16 @@ It is possible to change the parameters when making the environment:
 import gym
 import gym_battleship
 env = gym.make('battleship-v0', ship_sizes={4: 2, 3: 1}, board_size=(5, 5))
+```
+
+## Requirements
+
+gym  
+numpy
+
+## Installation
+
+The command to install the repository via pip is:
+```
+pip install git+https://github.com/thomashirtz/gym-battleship#egg=gym-battleship
 ```
