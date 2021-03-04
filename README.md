@@ -45,6 +45,12 @@ import gym_battleship
 env = gym.make('battleship-v0', ship_sizes={4: 2, 3: 1}, board_size=(5, 5))
 ```
 
+## todo
+
+- Add docstring
+- Add kwargs for reward customization
+- Add function to pretty-print boards
+
 ## Requirements
 
 gym  
