@@ -23,6 +23,11 @@ for i in range(10):
     env.step(env.action_space.sample())
 ```
 
+Observe the hidden game state:
+```
+print(env.board_generated)
+```
+
 ## Customize environments
 
 The original battleship game is played on a 10x10 grid and the fleet is composed 5 ships:  Carrier (occupies 5 spaces), Battleship (4), Cruiser (3), Submarine (3), and Destroyer (2).  
