@@ -91,12 +91,12 @@ class BattleshipEnv(gym.Env, ABC):
     @staticmethod
     def get_ship(ship_size, board_size) -> Ship:
         if np.random.choice(('Horizontal', 'Vertical')) == 'Horizontal':
-            min_x = np.random.randint(0, board_size[0] - 1 - ship_size)
-            min_y = np.random.randint(0, board_size[1] - 1)
+            min_x = np.random.randint(0, board_size[0] + 1 - ship_size)
+            min_y = np.random.randint(0, board_size[1])
             return Ship(min_x=min_x, max_x=min_x + ship_size, min_y=min_y, max_y=min_y + 1)
         else:
-            min_x = np.random.randint(0, board_size[0] - 1)
-            min_y = np.random.randint(0, board_size[1] - 1 - ship_size)
+            min_x = np.random.randint(0, board_size[0])
+            min_y = np.random.randint(0, board_size[1] + 1 - ship_size)
             return Ship(min_x=min_x, max_x=min_x + 1, min_y=min_y, max_y=min_y + ship_size)
 
     def is_place_empty(self, ship):
