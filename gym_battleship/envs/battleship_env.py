@@ -6,12 +6,18 @@ from copy import deepcopy
 from typing import Tuple, Optional
 from collections import namedtuple
 
+
 Ship = namedtuple('Ship', ['min_x', 'max_x', 'min_y', 'max_y'])
 Action = namedtuple('Action', ['x', 'y'])
 
 
 class BattleshipEnv(gym.Env, ABC):
-    def __init__(self, board_size: Tuple = None, ship_sizes: dict = None, episode_steps: int = 100, reward_dictionary: Optional[dict] = None):
+    def __init__(self,
+                 board_size: Tuple = None,
+                 ship_sizes: dict = None,
+                 episode_steps: int = 100,
+                 reward_dictionary: Optional[dict] = None):
+
         self.ship_sizes = ship_sizes or {5: 1, 4: 1, 3: 2, 2: 1}
         self.board_size = board_size or (10, 10)
 
@@ -23,13 +29,15 @@ class BattleshipEnv(gym.Env, ABC):
         self.step_count = None
         self.episode_steps = episode_steps
 
-        self.reward_dictionary = reward_dictionary or {  # Further tuning of the rewards required
+        reward_dictionary = {} if reward_dictionary is None else reward_dictionary
+        default_reward_dictionary = reward_dictionary or {  # Further tuning of the rewards required
             'win': 100,
             'missed': 0,
             'touched': 1,
             'action_already_done_missed': -0.5,
             'action_already_done_touched': -1
             }
+        self.reward_dictionary = {key: reward_dictionary.get(key, default_reward_dictionary[key]) for key in default_reward_dictionary.keys()}
 
         self.action_space = spaces.Discrete(self.board_size[0] * self.board_size[1])
         self.observation_space = spaces.MultiBinary([2, self.board_size[0], self.board_size[1]])
@@ -68,20 +76,20 @@ class BattleshipEnv(gym.Env, ABC):
             self.observation[1, action.x, action.y] = 1
             return self.observation, self.reward_dictionary['missed'], self.done, {}
 
-    def reset(self):
+    def reset(self) -> np.ndarray:
         self.set_board()
         self.board_generated = deepcopy(self.board)
         self.observation = np.zeros((2, *self.board_size), dtype=np.float32)
         self.step_count = 0
         return self.observation
 
-    def set_board(self):
+    def set_board(self) -> None:
         self.board = np.zeros(self.board_size, dtype=np.float32)
         for ship_size, ship_count in self.ship_sizes.items():
             for _ in range(ship_count):
                 self.place_ship(ship_size)
 
-    def place_ship(self, ship_size):
+    def place_ship(self, ship_size: int) -> None:
         can_place_ship = False
         while not can_place_ship:
             ship = self.get_ship(ship_size, self.board_size)
@@ -89,7 +97,7 @@ class BattleshipEnv(gym.Env, ABC):
         self.board[ship.min_x:ship.max_x, ship.min_y:ship.max_y] = True
 
     @staticmethod
-    def get_ship(ship_size, board_size) -> Ship:
+    def get_ship(ship_size: int, board_size: tuple) -> Ship:
         if np.random.choice(('Horizontal', 'Vertical')) == 'Horizontal':
             min_x = np.random.randint(0, board_size[0] + 1 - ship_size)
             min_y = np.random.randint(0, board_size[1])
@@ -99,5 +107,5 @@ class BattleshipEnv(gym.Env, ABC):
             min_y = np.random.randint(0, board_size[1] + 1 - ship_size)
             return Ship(min_x=min_x, max_x=min_x + 1, min_y=min_y, max_y=min_y + ship_size)
 
-    def is_place_empty(self, ship):
+    def is_place_empty(self, ship: Ship) -> bool:
         return np.count_nonzero(self.board[ship.min_x:ship.max_x, ship.min_y:ship.max_y]) == 0

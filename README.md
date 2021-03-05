@@ -42,8 +42,29 @@ It is possible to change the parameters when making the environment:
 ```
 import gym
 import gym_battleship
+
 env = gym.make('battleship-v0', ship_sizes={4: 2, 3: 1}, board_size=(5, 5))
 ```
+
+The other possible parameters are the different rewards as well as the maximum step:
+```
+import gym
+import gym_battleship
+
+env = gym.make('battleship-v0', episode_steps=10, reward_dictionary={'win': 200})
+```
+
+The default reward keys and values are the following:
+```
+reward_dictionary = {
+    'win': 100,
+    'missed': 0,
+    'touched': 1,
+    'action_already_done_missed': -0.5,
+    'action_already_done_touched': -1
+}
+```
+It is only necessary to pass to the environment the rewards that you want to edit.
 
 ## todo
 
