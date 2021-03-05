@@ -34,8 +34,8 @@ class BattleshipEnv(gym.Env, ABC):
             'win': 100,
             'missed': 0,
             'touched': 1,
-            'action_already_done_missed': -0.5,
-            'action_already_done_touched': -1
+            'action_already_done_missed': -1,
+            'action_already_done_touched': -0.5
             }
         self.reward_dictionary = {key: reward_dictionary.get(key, default_reward_dictionary[key]) for key in default_reward_dictionary.keys()}
 

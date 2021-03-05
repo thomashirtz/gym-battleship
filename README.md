@@ -60,8 +60,8 @@ reward_dictionary = {
     'win': 100,
     'missed': 0,
     'touched': 1,
-    'action_already_done_missed': -0.5,
-    'action_already_done_touched': -1
+    'action_already_done_missed': -1,
+    'action_already_done_touched': -0.5
 }
 ```
 It is only necessary to pass to the environment the rewards that you want to edit.
