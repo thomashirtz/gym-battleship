@@ -117,7 +117,7 @@ class BattleshipEnv(gym.Env, ABC):
         self._render(board)
 
     def render_board_generated(self):
-        board = np.full(self.board_size, ' ', dtype=str)
+        board = np.full(self.board_size, '⬜', dtype=str)
         board[self.board_generated != 0] = '⬛'
         self._render(board)
 
