@@ -111,13 +111,13 @@ class BattleshipEnv(gym.Env, ABC):
         return np.count_nonzero(self.board[ship.min_x:ship.max_x, ship.min_y:ship.max_y]) == 0
 
     def render(self, mode='human'):
-        board = np.full(self.board_size, '  ', dtype=str)
+        board = np.full(self.board_size, ' ', dtype=str)
         board[self.observation[0] != 0] = '❌'
         board[self.observation[1] != 0] = '⚪'
         self._render(board)
 
     def render_board_generated(self):
-        board = np.full(self.board_size, '  ', dtype=str)
+        board = np.full(self.board_size, ' ', dtype=str)
         board[self.board_generated != 0] = '⬛'
         self._render(board)
 
@@ -128,4 +128,5 @@ class BattleshipEnv(gym.Env, ABC):
         num_rows, num_columns = board.shape
         columns = [chr(i) for i in range(ord('A'), ord('A') + num_columns)]
         index = [i + 1 for i in range(num_rows)]
-        print(pd.DataFrame(board, columns=columns, index=index), end='\n')  # todo issue IDE not align properly the df
+        with pd.option_context('display.colheader_justify', 'right'):
+            print(pd.DataFrame(board, columns=columns, index=index), end='\n')  # todo issue IDE not align properly the df
