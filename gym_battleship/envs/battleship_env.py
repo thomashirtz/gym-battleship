@@ -61,7 +61,7 @@ class BattleshipEnv(gym.Env, ABC):
             if not self.board.any():
                 self.done = True
                 return self.observation, self.reward_dictionary['win'], self.done, {}
-            return self.observation, self.reward_dictionary['boat_touched'], self.done, {}
+            return self.observation, self.reward_dictionary['touched'], self.done, {}
 
         # Touched action already done (observation[0, x, y] == 1)
         elif self.observation[0, action.x, action.y] == 1:
