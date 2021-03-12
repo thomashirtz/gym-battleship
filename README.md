@@ -60,17 +60,66 @@ reward_dictionary = {
     'win': 100,
     'missed': 0,
     'touched': 1,
-    'action_already_done_missed': -1,
-    'action_already_done_touched': -0.5
+    'repeat_missed': -1,
+    'repeat_touched': -0.5
 }
 ```
 It is only necessary to pass to the environment the rewards that you want to edit.
 
+## Render
+
+Two functions exist to render the environment:
+```
+env.render_board_generated()
+```
+```
+    A  B  C  D  E  F  G  H  I  J
+1                               
+2         ⬛  ⬛  ⬛  ⬛  ⬛         
+3                               
+4                     ⬛  ⬛  ⬛   
+5                     ⬛         
+6                     ⬛         
+7                     ⬛         
+8                     ⬛     ⬛  ⬛
+9                               
+10  ⬛  ⬛  ⬛                     
+```
+```
+env.render()
+```
+```
+    A  B  C  D  E  F  G  H  I  J
+1               ⚪               
+2            ❌  ❌               
+3                  ⚪            
+4                               
+5   ⚪     ⚪                     
+6                               
+7               ⚪               
+8   ⚪                           
+9                               
+10                              
+```
+code snippet:
+
+```
+import gym
+import gym_battleship
+
+env = gym.make('battleship-v0')
+env.reset()
+
+for i in range(10):
+    env.step(env.action_space.sample())
+    env.render()
+
+env.render_board_generated()
+```
+
 ## todo
 
 - Add docstring
-- Add kwargs for reward customization
-- Add function to pretty-print boards
 
 ## Requirements
 

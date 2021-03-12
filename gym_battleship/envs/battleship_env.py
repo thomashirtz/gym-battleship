@@ -30,12 +30,12 @@ class BattleshipEnv(gym.Env, ABC):
         self.episode_steps = episode_steps
 
         reward_dictionary = {} if reward_dictionary is None else reward_dictionary
-        default_reward_dictionary = reward_dictionary or {  # Further tuning of the rewards required
+        default_reward_dictionary = reward_dictionary or {  # todo further tuning of the rewards required
             'win': 100,
             'missed': 0,
             'touched': 1,
-            'action_already_done_missed': -1,
-            'action_already_done_touched': -0.5
+            'repeat_missed': -1,
+            'repeat_touched': -0.5
             }
         self.reward_dictionary = {key: reward_dictionary.get(key, default_reward_dictionary[key]) for key in default_reward_dictionary.keys()}
 
@@ -53,25 +53,25 @@ class BattleshipEnv(gym.Env, ABC):
         if self.step_count >= self.episode_steps:
             self.done = True
 
-        # Touched action (board[x, y] == 1)
+        # Touched (board[x, y] == 1)
         if self.board[action.x, action.y] == 1:
             self.board[action.x, action.y] = 0
             self.observation[0, action.x, action.y] = 1
-            # Check if there is boat(s) left
+            # Win (No boat left)
             if not self.board.any():
                 self.done = True
                 return self.observation, self.reward_dictionary['win'], self.done, {}
             return self.observation, self.reward_dictionary['touched'], self.done, {}
 
-        # Touched action already done (observation[0, x, y] == 1)
+        # Repeat touched (observation[0, x, y] == 1)
         elif self.observation[0, action.x, action.y] == 1:
-            return self.observation, self.reward_dictionary['action_already_done_touched'], self.done, {}
+            return self.observation, self.reward_dictionary['repeat_touched'], self.done, {}
 
-        # Missed action already done (observation[1, x, y] == 1)
+        # Repeat missed (observation[1, x, y] == 1)
         elif self.observation[1, action.x, action.y] == 1:
-            return self.observation, self.reward_dictionary['action_already_done_missed'], self.done, {}
+            return self.observation, self.reward_dictionary['repeat_missed'], self.done, {}
 
-        # Action not already done and a boat was not touched
+        # Missed (Action not repeated and boat(s) not touched)
         else:
             self.observation[1, action.x, action.y] = 1
             return self.observation, self.reward_dictionary['missed'], self.done, {}
@@ -91,7 +91,7 @@ class BattleshipEnv(gym.Env, ABC):
 
     def place_ship(self, ship_size: int) -> None:
         can_place_ship = False
-        while not can_place_ship:
+        while not can_place_ship:  # todo add protection infinite loop
             ship = self.get_ship(ship_size, self.board_size)
             can_place_ship = self.is_place_empty(ship)
         self.board[ship.min_x:ship.max_x, ship.min_y:ship.max_y] = True
@@ -109,3 +109,23 @@ class BattleshipEnv(gym.Env, ABC):
 
     def is_place_empty(self, ship: Ship) -> bool:
         return np.count_nonzero(self.board[ship.min_x:ship.max_x, ship.min_y:ship.max_y]) == 0
+
+    def render(self, mode='human'):
+        board = np.full(self.board_size, '  ', dtype=str)
+        board[self.observation[0] != 0] = '❌'
+        board[self.observation[1] != 0] = '⚪'
+        self._render(board)
+
+    def render_board_generated(self):
+        board = np.full(self.board_size, '  ', dtype=str)
+        board[self.board_generated != 0] = '⬛'
+        self._render(board)
+
+    @staticmethod
+    def _render(board):
+        import pandas as pd
+
+        num_rows, num_columns = board.shape
+        columns = [chr(i) for i in range(ord('A'), ord('A') + num_columns)]
+        index = [i + 1 for i in range(num_rows)]
+        print(pd.DataFrame(board, columns=columns, index=index), end='\n')  # todo issue IDE not align properly the df
