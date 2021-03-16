@@ -94,6 +94,7 @@ class BattleshipEnv(gym.Env, ABC):
         self.board_generated = deepcopy(self.board)
         self.observation = np.zeros((2, *self.board_size), dtype=np.float32)
         self.step_count = 0
+        self.done = False
         return self.observation
 
     def set_board(self) -> None:
