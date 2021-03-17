@@ -3,7 +3,7 @@ import numpy as np
 from abc import ABC
 from gym import spaces
 from copy import deepcopy
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Union
 from collections import namedtuple
 
 
@@ -34,6 +34,9 @@ class BattleshipEnv(gym.Env, ABC):
         self.ship_sizes = ship_sizes or {5: 1, 4: 1, 3: 2, 2: 1}
         self.board_size = board_size or (10, 10)
 
+        assert (sum(k*v for k, v in self.ship_sizes.items()) <= self.board_size[0]*self.board_size[1]),\
+            "The number of cell taken by ships is higher than the available cells "
+
         self.board = None  # Hidden state updated throughout the game
         self.board_generated = None  # Hidden state generated and left not updated (for debugging purposes)
         self.observation = None  # the observation is a (2, n, m) matrix, the first channel is for the missile that was launched on a cell that contained a boat, the second channel is for the missile launched that was launch on a cell that was not containing any boat
@@ -55,11 +58,20 @@ class BattleshipEnv(gym.Env, ABC):
         self.action_space = spaces.Discrete(self.board_size[0] * self.board_size[1])
         self.observation_space = spaces.MultiBinary([2, self.board_size[0], self.board_size[1]])
 
-    def step(self, raw_action: int) -> Tuple[np.ndarray, int, bool, dict]:
-        assert (raw_action < self.board_size[0]*self.board_size[1]),\
-            "Invalid action (Superior than size_board[0]*size_board[1])"
+    def step(self, raw_action: Union[int, tuple]) -> Tuple[np.ndarray, int, bool, dict]:
+        if isinstance(raw_action, int):
+            assert (0 <= raw_action < self.board_size[0]*self.board_size[1]),\
+                "Invalid action (The encoded action is outside of the limits)"
+            action = Action(x=raw_action % self.board_size[0], y=raw_action // self.board_size[0])
 
-        action = Action(x=raw_action % self.board_size[0], y=raw_action // self.board_size[0])
+        elif isinstance(raw_action, tuple):
+            assert (0 <= raw_action[0] < self.board_size[0] and 0 <= raw_action[1] < self.board_size[1]),\
+                "Invalid action (The action is outside the board)"
+            action = Action(x=raw_action[0], y=raw_action[1])
+
+        else:
+            raise AssertionError("Invalid action (Unsupported raw_action type)")
+
         self.step_count += 1
 
         # Check if the game is done (if true, the current step is the "last step")
