@@ -27,6 +27,24 @@ Observe the hidden game state:
 ```
 print(env.board_generated)
 ```
+## Valid actions
+
+There is two way to input the action.  
+The first way is to input the tuple as it is:
+```
+env = gym.make('battleship-v0')
+env.reset()
+action = (0, 0)
+env.step(action)
+```
+
+The second way is to input an encoded action:
+```
+env = gym.make('battleship-v0')
+env.reset()
+action = 10
+env.step(action)
+```
 
 ## Customize environments
 
@@ -73,53 +91,29 @@ Two functions exist to render the environment:
 env.render_board_generated()
 ```
 ```
-    A  B  C  D  E  F  G  H  I  J
-1   ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜
-2   ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜
-3   ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜
-4   ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜
-5   ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜
-6   ⬜  ⬜  ⬜  ⬛  ⬜  ⬜  ⬜  ⬜  ⬛  ⬜
-7   ⬜  ⬜  ⬜  ⬛  ⬜  ⬛  ⬛  ⬛  ⬛  ⬜
-8   ⬜  ⬜  ⬜  ⬛  ⬜  ⬜  ⬜  ⬛  ⬛  ⬛
-9   ⬜  ⬜  ⬜  ⬛  ⬜  ⬜  ⬜  ⬜  ⬜  ⬜
-10  ⬜  ⬜  ⬜  ⬛  ⬛  ⬛  ⬛  ⬛  ⬜  ⬜
-```
-```
 env.render()
 ```
-```
-    A  B  C  D  E  F  G  H  I  J
-1                               
-2                               
-3                               
-4         ⚪                     
-5                     ⚪        ⚪
-6   ⚪                       ❌   
-7               ⚪        ❌      
-8   ⚪     ⚪                     
-9                               
-10                 ❌            
-```
-code snippet:
+Examples of renders using on an Ipython notebook (`env.render()` on the left and `env.render_board_generated()` on the right)
+![ipython-render](ipython-render.jpg)
 
-```
-import gym
-import gym_battleship
+<details>
+    <summary>Code snippet for rendering</summary>
 
-env = gym.make('battleship-v0')
-env.reset()
+        import gym
+        import gym_battleship
 
-for i in range(10):
-    env.step(env.action_space.sample())
-    env.render()
+        env = gym.make('battleship-v0')
+        env.reset()
 
-env.render_board_generated()
-```
+        for i in range(10):
+            env.step(env.action_space.sample())
+            env.render()
 
-## todo
+        env.render_board_generated()
+        
+</details>
 
-- Add docstring
+Unfortunately, the pretty print of dataframe in IDE or console will not be as nice as a dataframe displayed in a notebook.
 
 ## Requirements
 
