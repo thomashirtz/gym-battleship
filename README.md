@@ -1,5 +1,5 @@
 # gym-battleship
-Battleship environment using the OpenAI environment toolkit.
+Battleship environment using the OpenAI environment toolkit.<img align="right" width="400"  src="battleship.png"> 
 
 ## Basics
 
