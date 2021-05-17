@@ -115,6 +115,11 @@ Examples of renders using on an Ipython notebook (`env.render()` on the left and
 
 Unfortunately, the pretty print of dataframe in IDE or console will not be as nice as a dataframe displayed in a notebook.
 
+## Todo
+
+- Write docstring
+- Create methods to let agents choose the position of the ships
+
 ## Requirements
 
 gym  
