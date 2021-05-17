@@ -3,7 +3,9 @@ import numpy as np
 from abc import ABC
 from gym import spaces
 from copy import deepcopy
-from typing import Tuple, Optional, Union
+from typing import Union
+from typing import Tuple
+from typing import Optional
 from collections import namedtuple
 
 
@@ -33,9 +35,6 @@ class BattleshipEnv(gym.Env, ABC):
 
         self.ship_sizes = ship_sizes or {5: 1, 4: 1, 3: 2, 2: 1}
         self.board_size = board_size or (10, 10)
-
-        assert (sum(k*v for k, v in self.ship_sizes.items()) <= self.board_size[0]*self.board_size[1]),\
-            "The number of cell taken by ships is higher than the available cells "
 
         self.board = None  # Hidden state updated throughout the game
         self.board_generated = None  # Hidden state generated and left not updated (for debugging purposes)
@@ -100,6 +99,10 @@ class BattleshipEnv(gym.Env, ABC):
         else:
             self.observation[1, action.x, action.y] = 1
             return self.observation, self.reward_dictionary['missed'], self.done, {}
+
+    def _setup_board(self):
+        # todo Method added as reminder to implement way for an other agent to setup himself the location of the boats
+        raise NotImplementedError
 
     def reset(self) -> np.ndarray:
         self.set_board()
@@ -166,4 +169,3 @@ class BattleshipEnv(gym.Env, ABC):
 
         # todo maybe put the board generated on the right side
         #  https://stackoverflow.com/questions/38783027/jupyter-notebook-display-two-pandas-tables-side-by-side
-
