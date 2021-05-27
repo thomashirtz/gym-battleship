@@ -171,7 +171,7 @@ attackers. Then the attackers plays like in `Battleship-v0`. Finally, the defend
 learning step.
 
 The render and customization is identical as in the `Battleship-v0` environment.
-=======
+
 ## Todo
 
 - Write docstring
