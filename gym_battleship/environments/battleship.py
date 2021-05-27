@@ -55,7 +55,7 @@ class BattleshipEnv(gym.Env, ABC):
         self.reward_dictionary = {key: reward_dictionary.get(key, default_reward_dictionary[key]) for key in default_reward_dictionary.keys()}
 
         self.action_space = spaces.Discrete(self.board_size[0] * self.board_size[1])
-        self.observation_space = spaces.MultiBinary([2, self.board_size[0], self.board_size[1]])
+        self.observation_space = spaces.Box(low=0, high=1, shape=(2, self.board_size[0], self.board_size[1]), dtype=int)
 
     def step(self, raw_action: Union[int, tuple]) -> Tuple[np.ndarray, int, bool, dict]:
         if isinstance(raw_action, int):
@@ -100,43 +100,39 @@ class BattleshipEnv(gym.Env, ABC):
             self.observation[1, action.x, action.y] = 1
             return self.observation, self.reward_dictionary['missed'], self.done, {}
 
-    def _setup_board(self):
-        # todo Method added as reminder to implement way for an other agent to setup himself the location of the boats
-        raise NotImplementedError
-
     def reset(self) -> np.ndarray:
-        self.set_board()
+        self._set_board()
         self.board_generated = deepcopy(self.board)
         self.observation = np.zeros((2, *self.board_size), dtype=np.float32)
         self.step_count = 0
         self.done = False
         return self.observation
 
-    def set_board(self) -> None:
+    def _set_board(self) -> None:
         self.board = np.zeros(self.board_size, dtype=np.float32)
         for ship_size, ship_count in self.ship_sizes.items():
             for _ in range(ship_count):
-                self.place_ship(ship_size)
+                self._place_ship(ship_size)
 
-    def place_ship(self, ship_size: int) -> None:
+    def _place_ship(self, ship_size: int) -> None:
         can_place_ship = False
         while not can_place_ship:  # todo add protection infinite loop
-            ship = self.get_ship(ship_size, self.board_size)
-            can_place_ship = self.is_place_empty(ship)
+            ship = self._get_ship(ship_size, self.board_size)
+            can_place_ship = self._is_place_empty(ship)
         self.board[ship.min_x:ship.max_x, ship.min_y:ship.max_y] = True
 
     @staticmethod
-    def get_ship(ship_size: int, board_size: tuple) -> Ship:
+    def _get_ship(ship_size: int, board_size: tuple) -> Ship:
         if np.random.choice(('Horizontal', 'Vertical')) == 'Horizontal':
             min_x = np.random.randint(0, board_size[0] + 1 - ship_size)
             min_y = np.random.randint(0, board_size[1])
             return Ship(min_x=min_x, max_x=min_x + ship_size, min_y=min_y, max_y=min_y + 1)
-        else:
+        else: 
             min_x = np.random.randint(0, board_size[0])
             min_y = np.random.randint(0, board_size[1] + 1 - ship_size)
             return Ship(min_x=min_x, max_x=min_x + 1, min_y=min_y, max_y=min_y + ship_size)
 
-    def is_place_empty(self, ship: Ship) -> bool:
+    def _is_place_empty(self, ship: Ship) -> bool:
         return np.count_nonzero(self.board[ship.min_x:ship.max_x, ship.min_y:ship.max_y]) == 0
 
     def render(self, mode='human'):
