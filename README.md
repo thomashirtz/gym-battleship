@@ -116,7 +116,6 @@ Examples of renders using on an Ipython notebook (`env.render()` on the left and
 
 Unfortunately, the pretty print of dataframe in IDE or console will not be as nice as a dataframe displayed in a notebook.
 
-<<<<<<< HEAD
 ## Adversarial Battleship Environment
 
 ### About
@@ -129,7 +128,7 @@ like in the `Battleship-v0` environment.
 
 The following script shows how to train the two agents:
 
-```
+```python
 import gym
 import gym_battleship
 from collections import namedtuple
