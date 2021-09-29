@@ -1,6 +1,5 @@
 import gym
 import numpy as np
-from abc import ABC
 from gym import spaces
 from copy import deepcopy
 from typing import Union
@@ -26,7 +25,7 @@ def is_notebook():
         return False  # Probably standard Python interpreter
 
 
-class BattleshipEnv(gym.Env, ABC):
+class BattleshipEnv(gym.Env):
     def __init__(self,
                  board_size: Tuple = None,
                  ship_sizes: dict = None,
@@ -127,7 +126,7 @@ class BattleshipEnv(gym.Env, ABC):
             min_x = np.random.randint(0, board_size[0] + 1 - ship_size)
             min_y = np.random.randint(0, board_size[1])
             return Ship(min_x=min_x, max_x=min_x + ship_size, min_y=min_y, max_y=min_y + 1)
-        else: 
+        else:
             min_x = np.random.randint(0, board_size[0])
             min_y = np.random.randint(0, board_size[1] + 1 - ship_size)
             return Ship(min_x=min_x, max_x=min_x + 1, min_y=min_y, max_y=min_y + ship_size)
