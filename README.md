@@ -177,11 +177,6 @@ The render and customization is identical as in the `Battleship-v0` environment.
 - Write docstring
 - Create methods to let agents choose the position of the ships
 
-## Requirements
-
-gym  
-numpy
-
 ## Installation
 
 The command to install the repository via pip is:
