@@ -27,8 +27,8 @@ class AdversarialBattleshipEnv(BattleshipEnv):  # noqa
             spaces.Discrete(2)
         ))
         self.defender_observation_space = spaces.Tuple((
-            spaces.Box(low=0, high=max(self.ship_sizes.values()), shape=(max(self.ship_sizes.keys()),), dtype=int),
-            spaces.Box(low=0, high=1, shape=(self.board_size[0], self.board_size[1]), dtype=int)
+            spaces.Box(low=0, high=max(self.ship_sizes.values()), shape=(max(self.ship_sizes.keys()),)),
+            spaces.Box(low=0, high=1, shape=(self.board_size[0], self.board_size[1]))
         ))
 
     def reset(self) -> Tuple[np.ndarray, np.array]:
